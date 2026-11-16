@@ -12,3 +12,7 @@ class ProcessorSummary(BaseModel):
 class PaymentsSummary(BaseModel):
     default: ProcessorSummary
     fallback: ProcessorSummary
+
+class HealthResponse(BaseModel):
+    failing: bool
+    minResponseTime: int

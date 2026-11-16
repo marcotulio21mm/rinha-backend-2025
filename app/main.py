@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query, Response, status
 from datetime import datetime, timezone
+from app.health import poll_health
 from app.models import PaymentRequest, PaymentsSummary, ProcessorSummary
 from app.redis_client import redis_client
 from contextlib import asynccontextmanager
@@ -11,8 +12,10 @@ import json
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     task = asyncio.create_task(process_queue())
+    task_health = asyncio.create_task(poll_health())
     yield
     task.cancel()
+    task_health.cancel()
     
 app = FastAPI(lifespan=lifespan)
 
